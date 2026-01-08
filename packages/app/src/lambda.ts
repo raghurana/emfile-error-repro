@@ -1,4 +1,4 @@
-import { Context } from "aws-lambda";
+import { type Context } from "aws-lambda";
 import { AWSSecretsManagerService } from "./aws-secrets-mgr";
 import { reloadLocalAndSecretsManagerValues } from "./env-vars";
 import { log } from "./logger";

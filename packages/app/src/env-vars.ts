@@ -14,10 +14,7 @@ export const reloadLocalAndSecretsManagerValues = async (
   const env: Env = {};
 
   // Load pre-canned values
-  Object.assign(env, {
-    // Add pre-canned values here
-    DB_NAME: "some-document-db-name",
-  });
+  Object.assign(env, { DB_NAME: "some-document-db-name" });
 
   // Load values from Secrets Manager
   Object.assign(
@@ -33,7 +30,7 @@ const getSecretsManagerValues = async (
   env: Env,
   secretsToLoad: Record<string, string>
 ): Promise<Env> => {
-  const secretsToMap: { [key: string]: string } = {};
+  const secretsToMap: Record<string, string> = {};
 
   const getSecretPromises = Object.values(secretsToLoad).map((secretName) =>
     awsSecretsManager.getSecretValue(secretName)
@@ -42,7 +39,7 @@ const getSecretsManagerValues = async (
   const secretValues = await Promise.all(getSecretPromises);
 
   Object.keys(secretsToLoad).forEach(
-    (envKey, index) => (secretsToMap[envKey] = secretValues[index])
+    (envKey, index) => (secretsToMap[envKey] = secretValues[index] ?? "")
   );
 
   return mapValuesToEnv(secretsToMap, env);
