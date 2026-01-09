@@ -12,7 +12,7 @@ echo "Cleaned up the dist directory"
 # Build the Lambda functions
 npx esbuild $SRC_DIR/* --entry-names=[dir]/[name]/index \
     --bundle --minify --sourcemap --platform=node --target=es2020  \
-    --outdir=$DIST_DIR --external:aws-sdk --external:aws-lambda
+    --outdir=$DIST_DIR --external:aws-sdk
     
 echo "Built the Lambda functions"
 

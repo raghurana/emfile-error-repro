@@ -1,4 +1,3 @@
-import { type Context } from 'aws-lambda';
 import { AWSSecretsManagerService } from '../aws-secrets-mgr';
 import { reloadLocalAndSecretsManagerValues } from '../env-vars';
 
@@ -7,7 +6,7 @@ const awsRegion = process.env.AWS_REGION || 'ap-southeast-2';
 const awsSecretsManager = new AWSSecretsManagerService(awsRegion);
 
 // Lambda handler
-export const handler = async (event: unknown, context: Context) => {
+export const handler = async (event: unknown, context: unknown) => {
   console.log('Event:', event);
   console.log('Context:', context);
 
