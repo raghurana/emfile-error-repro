@@ -8,8 +8,9 @@ const awsSecretsManager = new AWSSecretsManagerService(awsRegion);
 // Lambda handler
 export const handler = async (event: unknown, context: unknown) => {
   console.log('Event:', event);
-  console.log('Context:', context);
 
   // await reloadLocalAndSecretsManagerValues(awsSecretsManager);
+
+  console.log('Execution complete - returning 200 OK');
   return { statusCode: 200, body: 'Ok' };
 };
