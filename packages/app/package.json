@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "deploy": "chmod +x deploy.sh && ./deploy.sh",
+    "predeploy": "npm run typecheck"
   },
   "keywords": [],
   "author": "Raghu Rana",

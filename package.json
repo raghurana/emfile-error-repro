@@ -4,13 +4,15 @@
   "private": true,
   "workspaces": [
     "packages/*"
-  ], 
+  ],
   "keywords": [],
   "author": "Raghu Rana",
-  "license": "ISC",  
+  "license": "ISC",
   "devDependencies": {
-    "tsx": "^4.0.0",
-    "typescript": "^5.3.0",
-    "@types/node": "^24.10.1"
+    "@types/node": "^24.10.1",
+    "typescript": "^5.3.0"
+  },
+  "scripts": {
+    "deploy": "npm run deploy -w packages/infra && npm run deploy -w packages/app"
   }
 }

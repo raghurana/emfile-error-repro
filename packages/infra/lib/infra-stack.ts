@@ -1,8 +1,8 @@
-import * as cdk from "aws-cdk-lib/core";
-import * as lambda from "aws-cdk-lib/aws-lambda";
-import * as sqs from "aws-cdk-lib/aws-sqs";
-import * as lambdaEventSources from "aws-cdk-lib/aws-lambda-event-sources";
-import { Construct } from "constructs";
+import * as cdk from 'aws-cdk-lib/core';
+import * as lambda from 'aws-cdk-lib/aws-lambda';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
+import { Construct } from 'constructs';
 
 export class EmFileErrInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -14,13 +14,13 @@ export class EmFileErrInfraStack extends cdk.Stack {
     const visibilityTimeout = cdk.Duration.seconds(60); // > lambda timeout
 
     // Create Dead Letter Queue
-    const dlq = new sqs.Queue(this, "EmFileErrSqsDlq", {
-      queueName: "em-file-err-dlq",
+    const dlq = new sqs.Queue(this, 'EmFileErrSqsDlq', {
+      queueName: 'em-file-err-dlq',
     });
 
     // Create SQS Queue with DLQ
-    const queue = new sqs.Queue(this, "EmFileErrSqsQueue", {
-      queueName: "em-file-err-queue",
+    const queue = new sqs.Queue(this, 'EmFileErrSqsQueue', {
+      queueName: 'em-file-err-queue',
       visibilityTimeout: visibilityTimeout,
       deadLetterQueue: {
         queue: dlq,
@@ -29,9 +29,10 @@ export class EmFileErrInfraStack extends cdk.Stack {
     });
 
     // Create Lambda function with inline TypeScript code
-    const emFileErrLambda = new lambda.Function(this, "EmFileErrLambda", {
+    const emFileErrLambda = new lambda.Function(this, 'EmFileErrLambda', {
       runtime: lambda.Runtime.NODEJS_22_X,
-      handler: "index.handler",
+      handler: 'index.handler',
+      functionName: 'em-err-lambda',
       code: lambda.Code.fromInline(`
         exports.handler = async (event) => {
           console.log('Hello World from Lambda!');
