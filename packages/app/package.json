@@ -4,8 +4,9 @@
   "description": "",
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "deploy": "chmod +x deploy.sh && ./deploy.sh",
-    "predeploy": "npm run typecheck"
+    "deploy": "chmod +x ./scripts/deploy.sh && ./scripts/deploy.sh",
+    "predeploy": "npm run typecheck",
+    "seedq": "chmod +x ./scripts/sqs-load.sh && ./scripts/sqs-load.sh"
   },
   "keywords": [],
   "author": "Raghu Rana",
