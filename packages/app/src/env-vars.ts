@@ -47,6 +47,26 @@ const mapValuesToEnv = (secretsToMap: any, env: Env): Env => {
           envSecrets.DB_CONNECTION_STRING = `mongodb://${username}:${password}@${host}:${port}/${env.DB_NAME}?${replicaSet}`;
           break;
         }
+        case 'eaiCreds': {
+          envSecrets.EAI_CREDS = secretsToMap[secretName];
+          break;
+        }
+        case 'privateKey': {
+          envSecrets.PRIVATE_KEY = secretsToMap[secretName];
+          break;
+        }
+        case 'publicKey': {
+          envSecrets.PUBLIC_KEY = secretsToMap[secretName];
+          break;
+        }
+        case 'publicJwk': {
+          envSecrets.PUBLIC_JWK = secretsToMap[secretName];
+          break;
+        }
+        case 'clientHashes': {
+          envSecrets.CLIENT_HASHES = secretsToMap[secretName];
+          break;
+        }
       }
     }
   });

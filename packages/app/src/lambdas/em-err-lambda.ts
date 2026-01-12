@@ -8,16 +8,22 @@ const awsSecretsManager = new AWSSecretsManagerService(awsRegion);
 
 // Lambda handler
 export const handler = async (event: unknown, context: unknown) => {
-  console.log('Event:', event);
+  const secretsToLoad: Record<string, string> = {
+    documentDbCreds: 'documentDBCreds',
+    eaiCreds: 'eaiCreds',
+    privateKey: 'privateKey',
+    publicKey: 'publicKey',
+    publicJwk: 'publicJwk',
+    clientHashes: 'clientHashes',
+  };
 
-  const secretsToLoad: Record<string, string> = { documentDbCreds: 'documentDBCredentials' };
-  const envVars = await reloadLocalAndSecretsManagerValues(awsSecretsManager, secretsToLoad);
-  console.log('Loaded local and secret env vars', envVars);
-
-  // Add artificial delay to simulate other processing lambda
-  console.log('Waiting....');
-  await setTimeout(5000);
-
-  console.log('Execution complete - returning 200 OK');
-  return { statusCode: 200, body: 'Ok' };
+  try {
+    const envVars = await reloadLocalAndSecretsManagerValues(awsSecretsManager, secretsToLoad);
+    console.log('Execution complete - returning 200 OK', envVars);
+    return { statusCode: 200, body: 'Ok' };
+  } catch (e) {
+    const ex = e as Error;
+    console.error('BOMB!', ex.message);
+    return { statusCode: 500, body: 'Handler Failed' };
+  }
 };

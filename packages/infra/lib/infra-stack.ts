@@ -2,8 +2,8 @@ import * as cdk from 'aws-cdk-lib/core';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as sqs from 'aws-cdk-lib/aws-sqs';
 import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
-import * as secretsmanager from 'aws-cdk-lib/aws-secretsmanager';
 import { Construct } from 'constructs';
+import { SecretsManager } from './secrets';
 
 export class EmFileErrInfraStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -53,11 +53,14 @@ export class EmFileErrInfraStack extends cdk.Stack {
     );
 
     // Create Secrets Manager secret
-    const documentDBCredentialsSecret = new secretsmanager.Secret(this, 'DocDBCredSecret', {
-      secretName: 'documentDBCredentials',
-    });
+    const allSecrets = new SecretsManager(this, 'InfraSecrets', props);
 
     // Grant Lambda permission to read the secret
-    documentDBCredentialsSecret.grantRead(emFileErrLambda);
+    allSecrets.documentDBCredentialsSecret.grantRead(emFileErrLambda);
+    allSecrets.eaiCreditialsSecret.grantRead(emFileErrLambda);
+    allSecrets.privateKeySecret.grantRead(emFileErrLambda);
+    allSecrets.publicKeySecret.grantRead(emFileErrLambda);
+    allSecrets.publicJwkSecret.grantRead(emFileErrLambda);
+    allSecrets.clientHashesSecret.grantRead(emFileErrLambda);
   }
 }
