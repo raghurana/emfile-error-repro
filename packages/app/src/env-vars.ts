@@ -36,7 +36,6 @@ const getSecretsManagerValues = async (
 const mapValuesToEnv = (secretsToMap: any, env: Env): Env => {
   const envSecrets: Env = {};
   Object.keys(secretsToMap).forEach((secretName) => {
-    console.log(`Secrets Manager mapping using internal mapping key: ${secretName}`);
     if (secretName && secretsToMap[secretName]) {
       switch (secretName) {
         case 'documentDbCreds': {
