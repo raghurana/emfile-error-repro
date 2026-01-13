@@ -1,7 +1,4 @@
-import * as cdk from 'aws-cdk-lib/core';
-import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as sqs from 'aws-cdk-lib/aws-sqs';
-import * as lambdaEventSources from 'aws-cdk-lib/aws-lambda-event-sources';
+import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { SecretsManager } from './secrets';
 
@@ -10,15 +7,15 @@ export class EmFileErrInfraStack extends cdk.Stack {
     super(scope, id, props);
 
     // Set known concurrency value
-    const maxConcurrency = 100;
+    const maxConcurrency = 1000;
     const lambdaTimeout = cdk.Duration.seconds(30);
     const visibilityTimeout = cdk.Duration.seconds(60); // > lambda timeout
 
     // Create Dead Letter Queue
-    const dlq = new sqs.Queue(this, 'EmFileErrSqsDlq', { queueName: 'em-file-err-dlq' });
+    const dlq = new cdk.aws_sqs.Queue(this, 'EmFileErrSqsDlq', { queueName: 'em-file-err-dlq' });
 
     // Create SQS Queue with DLQ
-    const queue = new sqs.Queue(this, 'EmFileErrSqsQueue', {
+    const queue = new cdk.aws_sqs.Queue(this, 'EmFileErrSqsQueue', {
       queueName: 'em-file-err-queue',
       visibilityTimeout: visibilityTimeout,
       deadLetterQueue: {
@@ -28,13 +25,13 @@ export class EmFileErrInfraStack extends cdk.Stack {
     });
 
     // Create Lambda function with inline TypeScript code
-    const emFileErrLambda = new lambda.Function(this, 'EmFileErrLambda', {
-      runtime: lambda.Runtime.NODEJS_22_X,
+    const emFileErrLambda = new cdk.aws_lambda.Function(this, 'EmFileErrLambda', {
+      runtime: cdk.aws_lambda.Runtime.NODEJS_22_X,
       handler: 'index.handler',
       functionName: 'em-err-lambda',
       timeout: lambdaTimeout,
       // reservedConcurrentExecutions: maxConcurrency,
-      code: lambda.Code.fromInline(`
+      code: cdk.aws_lambda.Code.fromInline(`
         exports.handler = async (event) => {          
           return {
             statusCode: 200,
@@ -46,7 +43,7 @@ export class EmFileErrInfraStack extends cdk.Stack {
 
     // Subscribe Lambda to SQS queue with event source mapping
     emFileErrLambda.addEventSource(
-      new lambdaEventSources.SqsEventSource(queue, {
+      new cdk.aws_lambda_event_sources.SqsEventSource(queue, {
         batchSize: 1,
         maxConcurrency: maxConcurrency,
       })

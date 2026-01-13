@@ -7,13 +7,14 @@
     "typecheck": "tsc --noEmit",
     "deploy": "chmod +x ./scripts/deploy.sh && ./scripts/deploy.sh",
     "predeploy": "npm run typecheck",
-    "seedq": "chmod +x ./scripts/sqs-load.sh && ./scripts/sqs-load.sh"
+    "seedq": "node ./scripts/sqs-load.js"
   },
   "keywords": [],
   "author": "Raghu Rana",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-secrets-manager": "^3.0.0"
+    "@aws-sdk/client-secrets-manager": "^3.0.0",
+    "@aws-sdk/client-sqs": "^3.967.0"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.0",
