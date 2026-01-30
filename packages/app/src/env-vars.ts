@@ -6,7 +6,8 @@ type Env = { [key: string]: string | undefined };
 // Reload local and secrets manager values
 export const reloadLocalAndSecretsManagerValues = async (
   awsSecretsManager: AWSSecretsManagerService,
-  secretsToLoad: Record<string, string>
+  secretsToLoad: Record<string, string>,
+  abortSignal?: AbortSignal
 ): Promise<Env> => {
   const env: Env = {};
 
@@ -14,7 +15,7 @@ export const reloadLocalAndSecretsManagerValues = async (
   Object.assign(env, { DB_NAME: 'my-db-name' });
 
   // Load values from Secrets Manager
-  const secretMgrValues = await getSecretsManagerValues(awsSecretsManager, env, secretsToLoad);
+  const secretMgrValues = await getSecretsManagerValues(awsSecretsManager, env, secretsToLoad, abortSignal);
   Object.assign(env, secretMgrValues);
   return env;
 };
@@ -23,10 +24,11 @@ export const reloadLocalAndSecretsManagerValues = async (
 const getSecretsManagerValues = async (
   awsSecMgr: AWSSecretsManagerService,
   env: Env,
-  secretsToLoad: Record<string, string>
+  secretsToLoad: Record<string, string>,
+  abortSignal?: AbortSignal
 ): Promise<Env> => {
   const secretsToMap: Record<string, string> = {};
-  const getSecretPromises = Object.values(secretsToLoad).map((secretName) => awsSecMgr.getSecretValue(secretName));
+  const getSecretPromises = Object.values(secretsToLoad).map((secretName) => awsSecMgr.getSecretValue(secretName, abortSignal));
   const secretValues = await Promise.all(getSecretPromises);
   Object.keys(secretsToLoad).forEach((envKey, index) => (secretsToMap[envKey] = secretValues[index] ?? ''));
   return mapValuesToEnv(secretsToMap, env);
@@ -39,11 +41,11 @@ const mapValuesToEnv = (secretsToMap: any, env: Env): Env => {
     if (secretName && secretsToMap[secretName]) {
       switch (secretName) {
         case 'documentDbCreds': {
-          const { username, password, host, port } = JSON.parse(secretsToMap[secretName]);
-          envSecrets.DB_HOST = `${host}:${port}`;
+          // const { username, password, host, port } = JSON.parse(secretsToMap[secretName]);
+          envSecrets.DB_HOST = `localhost:8000`;
           envSecrets.DB_PROVIDER = 'DocDB';
           const replicaSet = 'replicaSet=rs0&readPreference=secondaryPreferred';
-          envSecrets.DB_CONNECTION_STRING = `mongodb://${username}:${password}@${host}:${port}/${env.DB_NAME}?${replicaSet}`;
+          envSecrets.DB_CONNECTION_STRING = `mongodb://username:pass@$localhost:8000/${env.DB_NAME}?${replicaSet}`;
           break;
         }
         case 'eaiCreds': {

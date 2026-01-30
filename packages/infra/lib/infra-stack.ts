@@ -30,7 +30,7 @@ export class EmFileErrInfraStack extends cdk.Stack {
       handler: 'index.handler',
       functionName: 'em-err-lambda',
       timeout: lambdaTimeout,
-      // reservedConcurrentExecutions: maxConcurrency,
+      reservedConcurrentExecutions: 0,
       code: cdk.aws_lambda.Code.fromInline(`
         exports.handler = async (event) => {          
           return {

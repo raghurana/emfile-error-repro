@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "npx tsx watch ./src/index.ts",
+    "dev": "ulimit -n 1024 && tsx ./src/index.ts",
     "typecheck": "tsc --noEmit",
     "deploy": "chmod +x ./scripts/deploy.sh && ./scripts/deploy.sh",
     "predeploy": "npm run typecheck",
