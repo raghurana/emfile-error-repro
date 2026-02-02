@@ -19,12 +19,12 @@ export const handlerLoop = async (concurrency: number) => {
     controllers.push(ac);
 
     try {
-      // await badHandler({}, {}, ac.signal);
-      await goodHandler({}, {}, ac.signal);
+      await badHandler({}, {}, ac.signal);
+      // await goodHandler({}, {}, ac.signal);
       return { i, ok: true };
     } catch (e: any) {
       console.error(`${i}. ${(e as Error).message}`);
-      return { i, ok: false as const, err: String(e?.code || e?.name || e) };
+      return { i, ok: false, err: String(e?.code || e?.name || e) };
     }
   });
 
